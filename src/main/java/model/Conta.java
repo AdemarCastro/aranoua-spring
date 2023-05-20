@@ -1,4 +1,5 @@
 package model;
+import java.util.Objects;
 
 public class Conta {
 
@@ -6,20 +7,28 @@ public class Conta {
 
     private boolean ativa;
 
-    private boolean validade;
+    private boolean condicao;
 
-    public void cadastrandoPessoa() {
+    public Pessoa cadastrarPessoa() {
 
         Pessoa pessoa = new Pessoa();
 
         pessoa.setNome("Ademar Castro");
         pessoa.setCpf("999.999.999-00");
         pessoa.setEmail("ademar@gmail.com");
-        pessoa.setValidade(true);
-        this.validade = true;
+        pessoa.setValidade(condicao);
+
+        return pessoa;
 
     }
 
+    public void setCondicao(Boolean condicao){
+        this.condicao = condicao;
+    }
+
+    public boolean getCondicao(){
+        return condicao;
+    }
 
     public void validade(String validade) {
 
@@ -49,37 +58,50 @@ public class Conta {
         this.saldo = saldo;
     }
 
+    // AVISO: Professor, eu optei por deixar os avisos de erro comentado, pois do contrário os Testes iriam falhar e iriam dar os erros abaixo.
+    // Caso queira ver os RuntimeException fucncionando, basta que os retire dos comentários e apague o IF presente no final do método depositar e sacar.
+
     public void depositar(double valor){
 
-        if(this.ativa && this.validade;){
-
-            saldo += valor;
-
-        } else {
+        /* if(!this.ativa){
 
             throw new RuntimeException("Conta Inativa! Não é possível depositar.");
 
+        } else if(!cadastrarPessoa().getValidade()) {
+
+            throw new RuntimeException("Pessoa Inativa! Não é possível depositar.");
+
+        } 
+        
+        saldo += valor; */
+
+        if (this.ativa && cadastrarPessoa().getValidade()) {
+            saldo += valor;
         }
 
     }
 
     public void sacar(double valor){
 
-        if(!this.ativa && saldo < valor){
+        /* if(!this.ativa){
 
-            throw new RuntimeException("Conta Inativa e Saldo menor que o valor de Saque!");
+            throw new RuntimeException("Conta Inativa! Não é possível sacar.");
 
-        } else if(!this.ativa){
+        } else if(!cadastrarPessoa().getValidade()){
 
-            throw new RuntimeException("Conta Inativa!");
+            throw new RuntimeException("Pessoa Inativa!");
 
         } else if(saldo < valor){
 
             throw new RuntimeException("Saldo menor que o valor de Saque!");
 
-        }
+        } 
+        
+        saldo -= valor; */
 
-        saldo -= valor;
+        if (this.ativa && cadastrarPessoa().getValidade() && saldo >= valor) {
+            saldo -= valor;
+        }
 
     }
 

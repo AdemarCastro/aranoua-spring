@@ -39,6 +39,6 @@ public class Pessoa {
     private String nome = "";
     private String cpf = "";
     private String email = "";
-    private Boolean validade;
+    private Boolean validade = false;
 
 }

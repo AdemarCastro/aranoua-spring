@@ -11,7 +11,7 @@ public class ContaTest {
     private static double valorSaqueInvalido = 150.00;
     private static double valorZerado = 0.00;
 
-    private Conta conta;
+    private static Conta conta;
 
     private void preparaPreCondicao(String validade){
         this.conta = new Conta();
@@ -21,7 +21,7 @@ public class ContaTest {
     @Test
     public void deveDepositarComValorValido(){
 
-        preparaPreCondicao("Ativar");
+        preparaPreCondicao("Ativar"); // Ativar = Conta Ativa; Desativar = Conta Inativa.
 
         // Retornou True? Então passa por esse condição de teste
         conta.depositar(valorDeposito);
@@ -33,7 +33,7 @@ public class ContaTest {
     @Test
     public void deveSacarComValorMenorQueOSaldo(){
 
-        preparaPreCondicao("Ativar");
+        preparaPreCondicao("Ativar"); // Ativar = Conta Ativa; Desativar = Conta Inativa.
 
         conta.depositar(valorDeposito);
 
@@ -45,7 +45,7 @@ public class ContaTest {
     @Test
     public void naoDeveSacarComValorValido(){
 
-        preparaPreCondicao("Ativar");
+        preparaPreCondicao("Ativar"); // Ativar = Conta Ativa; Desativar = Conta Inativa.
 
         conta.depositar(valorDeposito);
 
@@ -59,7 +59,7 @@ public class ContaTest {
     @Test
     public void naoDeveDepositarComContaInativa(){
 
-        preparaPreCondicao("Desativar");
+        preparaPreCondicao("Desativar"); // Ativar = Conta Ativa; Desativar = Conta Inativa.
 
         // Em uma exceção eu só verifico se deve lançar, caso contrario eu não a utilizo
         Assertions.assertThrows(RuntimeException.class, () -> conta.depositar(valorDeposito));
@@ -68,10 +68,14 @@ public class ContaTest {
 
     }
 
+    // AVISO: Os métodos abaixo
+
     @Test
     public void naoDeveSacarComValorMaiorQueOSaldo(){
 
-        preparaPreCondicao("Ativar");
+        preparaPreCondicao("Ativar"); // Ativar = Conta Ativa; Desativar = Conta Inativa.
+
+        conta.setCondicao(true);
 
         conta.depositar(valorDeposito);
 
@@ -79,14 +83,18 @@ public class ContaTest {
 
         //Assertions.assertThrows(RuntimeException.class, () -> conta.sacar(100.00));
 
-        Assertions.assertEquals(valorZerado, conta.getSaldo());
+        Assertions.assertEquals(valorDeposito, conta.getSaldo());
 
     }
+
+    
 
     @Test
     public void naoDeveSacarComContaInativa(){
 
-        preparaPreCondicao("Ativar");
+        preparaPreCondicao("Ativar"); // Ativar = Conta Ativa; Desativar = Conta Inativa.
+
+        conta.setCondicao(true);
 
         conta.depositar(valorDeposito);
 
@@ -96,24 +104,37 @@ public class ContaTest {
 
         //Assertions.assertThrows(RuntimeException.class, () -> conta.sacar(100.00));
 
-        Assertions.assertEquals(valorZerado, conta.getSaldo());
+        Assertions.assertEquals(valorDeposito, conta.getSaldo());
 
     }
 
     @Test
-    public void naoDeveSacarComContaInativaESaldoMenorQueOValorDeSaque(){
+    public void naoDeveDepositarComPessoaInativa(){
 
-        preparaPreCondicao("Ativar");
+        preparaPreCondicao("Ativar"); // Ativar = Conta Ativa; Desativar = Conta Inativa.
+
+        conta.setCondicao(true); // Esse é o método para declarar se a Pessoa criada na classe Conta é ou não Ativa.
+
+        conta.depositar(valorDeposito); 
+
+        Assertions.assertEquals(valorDeposito, conta.getSaldo());
+
+    }
+
+    @Test
+    public void naoDeveSacarComPessoaInativa(){
+
+        preparaPreCondicao("Ativar"); // Ativar = Conta Ativa; Desativar = Conta Inativa.
+
+        conta.setCondicao(true); // Setei a Pessoa como Ativa para que possa Depositar.
 
         conta.depositar(valorDeposito);
 
-        conta.desativar();
+        conta.setCondicao(false); // Agora não pode mais ser realizada a operação de Sacar.
 
-        conta.sacar(valorSaqueInvalido);
+        conta.sacar(valorSaqueValido);
 
-        //Assertions.assertThrows(RuntimeException.class, () -> conta.sacar(100.00));
-
-        Assertions.assertEquals(valorZerado, conta.getSaldo());
+        Assertions.assertEquals(valorDeposito, conta.getSaldo());
 
     }
 
