@@ -6,6 +6,33 @@ public class Conta {
 
     private boolean ativa;
 
+    private boolean validade;
+
+    public void cadastrandoPessoa() {
+
+        Pessoa pessoa = new Pessoa();
+
+        pessoa.setNome("Ademar Castro");
+        pessoa.setCpf("999.999.999-00");
+        pessoa.setEmail("ademar@gmail.com");
+        pessoa.setValidade(true);
+        this.validade = true;
+
+    }
+
+
+    public void validade(String validade) {
+
+        if (validade == "Ativar") {
+            ativar();
+        } else if (validade == "Desativar") {
+            desativar();
+        } else {
+            throw new RuntimeException("Ops! Validade só pode ser Ativar ou Desativar. Tente novamente.");
+        }
+
+    }
+
     public void ativar(){
         this.ativa = true;
     }
@@ -22,29 +49,37 @@ public class Conta {
         this.saldo = saldo;
     }
 
-    public boolean depositar(double valor){
+    public void depositar(double valor){
 
-        boolean validade = false;
+        if(this.ativa && this.validade;){
 
-        if(this.ativa) {
             saldo += valor;
-            validade = true;
-        }
 
-        return validade;
+        } else {
+
+            throw new RuntimeException("Conta Inativa! Não é possível depositar.");
+
+        }
 
     }
 
-    public boolean sacar(double valor){
+    public void sacar(double valor){
 
-        boolean validade = false;
+        if(!this.ativa && saldo < valor){
 
-        if(saldo >= valor){
-            saldo -= valor;
-            validade = true;
+            throw new RuntimeException("Conta Inativa e Saldo menor que o valor de Saque!");
+
+        } else if(!this.ativa){
+
+            throw new RuntimeException("Conta Inativa!");
+
+        } else if(saldo < valor){
+
+            throw new RuntimeException("Saldo menor que o valor de Saque!");
+
         }
 
-        return validade;
+        saldo -= valor;
 
     }
 

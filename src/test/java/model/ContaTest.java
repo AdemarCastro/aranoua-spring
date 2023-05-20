@@ -5,43 +5,116 @@ import org.junit.jupiter.api.Test;
 
 public class ContaTest {
 
+    // Variaveis
+    private static double valorDeposito = 100.00;
+    private static double valorSaqueValido = 50.00;
+    private static double valorSaqueInvalido = 150.00;
+    private static double valorZerado = 0.00;
+
+    private Conta conta;
+
+    private void preparaPreCondicao(String validade){
+        this.conta = new Conta();
+        conta.validade(validade);
+    }
+
     @Test
     public void deveDepositarComValorValido(){
 
-        Conta conta = new Conta();
-        conta.ativar();
+        preparaPreCondicao("Ativar");
 
         // Retornou True? Então passa por esse condição de teste
-        Assertions.assertTrue(conta.depositar(100.00));
+        conta.depositar(valorDeposito);
 
-        Assertions.assertEquals(100.00,conta.getSaldo());
+        Assertions.assertEquals(valorDeposito,conta.getSaldo());
 
     }
 
     @Test
     public void deveSacarComValorMenorQueOSaldo(){
 
-        Conta conta = new Conta();
-        conta.ativar();
+        preparaPreCondicao("Ativar");
 
+        conta.depositar(valorDeposito);
 
-        Assertions.assertTrue(conta.depositar(100.00));
+        conta.sacar(valorSaqueValido);
 
-        Assertions.assertTrue(conta.sacar(50.00));
-
-        Assertions.assertEquals(50.00, conta.getSaldo());
+        Assertions.assertEquals(valorDeposito-valorSaqueValido, conta.getSaldo());
     }
 
     @Test
     public void naoDeveSacarComValorValido(){
 
-        Conta conta = new Conta();
-        conta.ativar();
+        preparaPreCondicao("Ativar");
+
+        conta.depositar(valorDeposito);
 
         // Saldo é menor que o valor sacado
-        Assertions.assertTrue(conta.depositar(99.00));
+        // () -> = Vai ficar um objeto vazio e adiciona a exceção (Lambda)
+        Assertions.assertThrows(RuntimeException.class, () -> conta.sacar(valorSaqueInvalido));
 
-        Assertions.assertEquals(100.00, conta.getSaldo());
+        Assertions.assertEquals(valorDeposito, conta.getSaldo());
+    }
+
+    @Test
+    public void naoDeveDepositarComContaInativa(){
+
+        preparaPreCondicao("Desativar");
+
+        // Em uma exceção eu só verifico se deve lançar, caso contrario eu não a utilizo
+        Assertions.assertThrows(RuntimeException.class, () -> conta.depositar(valorDeposito));
+
+        Assertions.assertEquals(valorZerado, conta.getSaldo());
+
+    }
+
+    @Test
+    public void naoDeveSacarComValorMaiorQueOSaldo(){
+
+        preparaPreCondicao("Ativar");
+
+        conta.depositar(valorDeposito);
+
+        conta.sacar(valorSaqueInvalido);
+
+        //Assertions.assertThrows(RuntimeException.class, () -> conta.sacar(100.00));
+
+        Assertions.assertEquals(valorZerado, conta.getSaldo());
+
+    }
+
+    @Test
+    public void naoDeveSacarComContaInativa(){
+
+        preparaPreCondicao("Ativar");
+
+        conta.depositar(valorDeposito);
+
+        conta.desativar();
+
+        conta.sacar(valorSaqueValido);
+
+        //Assertions.assertThrows(RuntimeException.class, () -> conta.sacar(100.00));
+
+        Assertions.assertEquals(valorZerado, conta.getSaldo());
+
+    }
+
+    @Test
+    public void naoDeveSacarComContaInativaESaldoMenorQueOValorDeSaque(){
+
+        preparaPreCondicao("Ativar");
+
+        conta.depositar(valorDeposito);
+
+        conta.desativar();
+
+        conta.sacar(valorSaqueInvalido);
+
+        //Assertions.assertThrows(RuntimeException.class, () -> conta.sacar(100.00));
+
+        Assertions.assertEquals(valorZerado, conta.getSaldo());
+
     }
 
 }
